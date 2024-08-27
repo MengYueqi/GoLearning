@@ -1,4 +1,8 @@
 # GoLearning
-Go语言学习记录
+The record of Go learning.
 
-## LeetCode Hot 100
+## 1. LeetCode Hot 100
+
+## 2. Gin
+
+We develop a web backend by using the framework -- Gin.
