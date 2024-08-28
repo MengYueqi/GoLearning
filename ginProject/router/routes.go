@@ -17,8 +17,11 @@ func SetupRouter() *gin.Engine {
 		c.String(http.StatusOK, "pong")
 	})
 
+	// Login 对应的路由
+	r.GET("/", controllers.LoginPage)
 	// HomePage 对应的路由
 	r.GET("/home", controllers.HomePage)
+	r.POST("/login", controllers.Login)
 
 	return r
 }
