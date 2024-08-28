@@ -37,7 +37,10 @@ func SetupRouter() *gin.Engine {
 	r.GET("/", controllers.LoginPage)
 	// HomePage 对应的路由
 	r.GET("/home", controllers.HomePage)
+	// 登录检查
 	r.POST("/login", controllers.Login)
 
+	// 博客操作
+	r.POST("/GetAllBlogsById", controllers.GetAllBlogsById)
 	return r
 }
