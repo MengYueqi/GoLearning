@@ -7,6 +7,11 @@ import (
 	"net/http"
 )
 
+type LoginRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 func LoginPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", gin.H{
 		"title": "Login",
@@ -14,9 +19,19 @@ func LoginPage(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
-	// 获取表单数据
-	username := c.PostForm("username")
-	password := c.PostForm("password")
+	var loginReq LoginRequest
+
+	// 获取并解析 JSON 数据
+	if err := c.ShouldBind(&loginReq); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	// 获取用户名和密码
+	username := loginReq.Username
+	password := loginReq.Password
+	fmt.Println(username, password)
+
 	user, error := dao.GetUserByUsername(username)
 
 	// 这里可以添加用户名和密码的验证逻辑
@@ -24,12 +39,10 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status": "Login successful",
 		})
-		c.Redirect(http.StatusFound, "/home")
 	} else {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"status": "Login failed",
 		})
 		fmt.Print(error)
-		c.Redirect(http.StatusUnauthorized, "/")
 	}
 }
