@@ -43,3 +43,8 @@ func GetAllBlogsById(AuthorId int) ([]*BlogsWithId, error) {
 	fmt.Println(blogs[0].Username)
 	return blogs, result.Error
 }
+
+func DeleteBlogById(BlogId int) error {
+	result := db.Where("id = ?", BlogId).Delete(&Blogs{})
+	return result.Error
+}
