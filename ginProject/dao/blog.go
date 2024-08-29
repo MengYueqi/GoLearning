@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-type Blogs struct {
+type BlogsWithId struct {
 	Id        int `gorm:"primary_key;AUTO_INCREMENT"`
 	CreatedAt time.Time
 	AuthorId  int
@@ -15,8 +15,24 @@ type Blogs struct {
 	Content   string
 }
 
-func GetAllBlogsById(AuthorId int) ([]*Blogs, error) {
-	var blogs []*Blogs
+type Blogs struct {
+	Id        int `gorm:"primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	AuthorId  int
+	Content   string
+}
+
+func AddBlog(AuthorId int, Content string) error {
+	blog := Blogs{
+		AuthorId: AuthorId,
+		Content:  Content,
+	}
+	result := db.Create(&blog)
+	return result.Error
+}
+
+func GetAllBlogsById(AuthorId int) ([]*BlogsWithId, error) {
+	var blogs []*BlogsWithId
 	fmt.Println(AuthorId)
 	//result := db.Where("author_id = ?", AuthorId).Find(&blogs)
 	result := db.Table("blogs").Select("blogs.id, blogs.created_at, blogs.author_id, blogs.content, users.username").
