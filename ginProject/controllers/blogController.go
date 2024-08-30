@@ -20,6 +20,11 @@ type DeleteBlogForm struct {
 	BlogId int `json:"blogId"`
 }
 
+type ModifyBlogForm struct {
+	BlogId  int    `json:"blogId"`
+	Content string `json:"content"`
+}
+
 func GetAllBlogsById(c *gin.Context) {
 	var blogForm BlogForm
 
@@ -36,6 +41,15 @@ func GetAllBlogsById(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"authorId": userId,
 		"blogs":    blogs,
+	})
+}
+
+func GetAllBlogs(c *gin.Context) {
+	blogs, _ := dao.GetAllBlogs()
+	fmt.Println(blogs)
+
+	c.JSON(http.StatusOK, gin.H{
+		"blogs": blogs,
 	})
 }
 
@@ -67,6 +81,26 @@ func DeleteBlog(c *gin.Context) {
 	}
 	blogId := deleteBlogForm.BlogId
 	err := dao.DeleteBlogById(blogId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"status": "success",
+		})
+	}
+}
+
+func ModifyBlogById(c *gin.Context) {
+	var modifyBlogForm ModifyBlogForm
+
+	// 获取 JSON 数据
+	if err := c.ShouldBind(&modifyBlogForm); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+	blogId := modifyBlogForm.BlogId
+	content := modifyBlogForm.Content
+	err := dao.ModifyBlogById(blogId, content)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	} else {

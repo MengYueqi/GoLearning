@@ -4,9 +4,15 @@
     <ul v-if="blogs.length > 0">
       <li v-for="blog in blogs" :key="blog.Id">
         <h3>{{ blog.Username }} (ID: {{ blog.Id }})</h3>
-        <p>{{ blog.Content }}</p>
+        <p v-if="!isEditing(blog.Id)">{{ blog.Content }}</p>
+        <div v-else>
+          <textarea v-model="editingContent" rows="3" style="width: 100%;"></textarea>
+          <button @click="updateBlog(blog.Id)">Save</button>
+          <button @click="cancelEditing">Cancel</button>
+        </div>
         <small>Created At: {{ formatDate(blog.CreatedAt) }}</small>
         <button @click="deleteBlog(blog.Id)">Delete</button>
+        <button @click="editBlog(blog.Id, blog.Content)" v-if="!isEditing(blog.Id)">Edit</button>
       </li>
     </ul>
     <p v-else>Loading blogs or no blogs available.</p>
@@ -19,6 +25,8 @@ import axios from 'axios'
 
 const authorId = ref(null)
 const blogs = ref([])
+const editingBlogId = ref(null)
+const editingContent = ref('')
 
 const fetchBlogs = async () => {
   try {
@@ -39,13 +47,44 @@ const deleteBlog = async (blogId) => {
       blogId: blogId
     })
     if (response.data.status === 'success') {
-      // 删除成功后，从博客列表中移除该博客
       blogs.value = blogs.value.filter(blog => blog.Id !== blogId)
     } else {
       console.error('Failed to delete blog.')
     }
   } catch (error) {
     console.error('Error deleting blog:', error)
+  }
+}
+
+const editBlog = (blogId, content) => {
+  editingBlogId.value = blogId
+  editingContent.value = content
+}
+
+const cancelEditing = () => {
+  editingBlogId.value = null
+  editingContent.value = ''
+}
+
+const isEditing = (blogId) => {
+  return editingBlogId.value === blogId
+}
+
+const updateBlog = async (blogId) => {
+  try {
+    const response = await axios.post('http://localhost:8081/modifyBlogById', {
+      BlogId: blogId,
+      Content: editingContent.value
+    })
+    if (response.data.status === 'success') {
+      const blog = blogs.value.find(blog => blog.Id === blogId)
+      if (blog) blog.Content = editingContent.value
+      cancelEditing()
+    } else {
+      console.error('Failed to update blog.')
+    }
+  } catch (error) {
+    console.error('Error updating blog:', error)
   }
 }
 
@@ -88,11 +127,12 @@ button {
   background-color: #e74c3c;
   color: white;
   cursor: pointer;
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  margin-right: 5px;
 }
 button:hover {
   background-color: #c0392b;
+}
+textarea {
+  margin-bottom: 10px;
 }
 </style>

@@ -44,6 +44,8 @@ func SetupRouter() *gin.Engine {
 	r.POST("/GetAllBlogsById", controllers.GetAllBlogsById)
 	r.POST("/addBlog", controllers.AddBlog)
 	r.POST("/deleteBlog", controllers.DeleteBlog)
+	r.POST("/getAllBlogs", controllers.GetAllBlogs)
+	r.POST("/modifyBlogById", controllers.ModifyBlogById)
 
 	return r
 }
