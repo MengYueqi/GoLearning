@@ -43,6 +43,7 @@ func GetAllBlogsById(AuthorId int) ([]*BlogsWithName, error) {
 	return blogs, result.Error
 }
 
+// GetAllBlogs 获取所有博客
 func GetAllBlogs() ([]*BlogsWithName, error) {
 	var blogs []*BlogsWithName
 	result := db.Table("blogs").Select("blogs.id, blogs.created_at, blogs.author_id, blogs.content, users.username").

@@ -49,6 +49,7 @@ func SetupRouter() *gin.Engine {
 
 	// 评论操作
 	r.POST("/getAllCommentsById", controllers.GetAllCommentsById)
+	r.POST("/addCommentById", controllers.AddCommentById)
 
 	return r
 }

@@ -18,6 +18,17 @@
           </ul>
         </div>
         <p v-else>Loading comments or no comments available.</p>
+
+        <!-- Add Comment Form -->
+        <div>
+          <h4>Add a Comment:</h4>
+          <input
+              type="text"
+              v-model="newCommentContent[blog.Id]"
+              placeholder="Enter your comment"
+          />
+          <button @click="addComment(blog.Id)">Submit Comment</button>
+        </div>
       </li>
     </ul>
     <p v-else>Loading blogs or no blogs available.</p>
@@ -30,6 +41,7 @@ import axios from 'axios'
 
 const authorId = ref(null)
 const blogs = ref([])
+const newCommentContent = ref({}) // To store new comment content for each blog
 
 const fetchBlogs = async () => {
   try {
@@ -59,6 +71,42 @@ const fetchCommentsForBlog = async (blog) => {
   } catch (error) {
     console.error(`Error fetching comments for blog ID ${blog.Id}:`, error)
     blog.comments = []  // Ensure comments is initialized
+  }
+}
+
+const addComment = async (blogId) => {
+  const content = newCommentContent.value[blogId]
+  if (!content) {
+    alert('Comment content cannot be empty.')
+    return
+  }
+
+  try {
+    const response = await axios.post('http://localhost:8081/addCommentById', {
+      blog_id: blogId,
+      user_id: 1,  // Assuming user_id is 1; adjust as needed
+      content: content
+    })
+
+    if (response.data.status === 'success') {
+      alert('Comment added successfully!')
+
+      // Add the new comment to the local comments array
+      const blog = blogs.value.find(b => b.Id === blogId)
+      if (blog) {
+        blog.comments.push({
+          Id: new Date().getTime(),  // Generate a temporary unique ID for the new comment
+          Username: 'Current User',  // Replace with the actual username if available
+          Content: content,
+          CreatedAt: new Date().toISOString()
+        })
+      }
+
+      // Clear the input field
+      newCommentContent.value[blogId] = ''
+    }
+  } catch (error) {
+    console.error(`Error adding comment to blog ID ${blogId}:`, error)
   }
 }
 
@@ -96,5 +144,22 @@ small {
 }
 h4 {
   margin-top: 10px;
+}
+input[type="text"] {
+  margin-right: 10px;
+  padding: 5px;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+}
+button {
+  padding: 5px 10px;
+  border-radius: 3px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #0056b3;
 }
 </style>
