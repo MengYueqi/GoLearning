@@ -1,5 +1,6 @@
 package dao
 
-func Init() {
-	initDB()
+func InitMySQL() {
+	initDBMySQL()
+	initRedis()
 }
