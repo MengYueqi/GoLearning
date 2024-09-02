@@ -1,7 +1,9 @@
 package dao
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"gorm.io/gorm"
 	"time"
 )
@@ -45,11 +47,32 @@ func GetAllBlogsById(AuthorId int) ([]*BlogsWithName, error) {
 
 // GetAllBlogs 获取所有博客
 func GetAllBlogs() ([]*BlogsWithName, error) {
+	// 定义 Redis 里的缓存键
+	cacheKey := fmt.Sprintf("AllBlogs:")
+
+	// 在 Redis 中获取相关数据
 	var blogs []*BlogsWithName
+	allBlogs, err := rdb.Get(ctx, cacheKey).Result()
+	if err == nil {
+		fmt.Println("Find in Redis!")
+		// 如果在 Redis 里获取了数据，则对数据进行反序列化
+		if err := json.Unmarshal([]byte(allBlogs), &blogs); err != nil {
+			return blogs, err
+		}
+	}
+
 	result := db.Table("blogs").Select("blogs.id, blogs.created_at, blogs.author_id, blogs.content, users.username").
 		Joins("JOIN users ON users.user_id = blogs.author_id").Find(&blogs)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, nil
+	}
+	// 将数据添加到 Redis 中并返回
+	// 将数据序列化为 JSON 字符串
+	blogsJSON, err := json.Marshal(blogs)
+	// 将序列化后的用户数据缓存到 Redis 中，设置过期时间为 10 分钟
+	err = rdb.Set(ctx, cacheKey, blogsJSON, 10*time.Minute).Err()
+	if err != nil {
+		fmt.Printf("Error setting cache for all blogs: %v\n", err)
 	}
 	return blogs, result.Error
 }
