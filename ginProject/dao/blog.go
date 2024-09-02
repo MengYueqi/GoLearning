@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
+	"log"
 	"time"
 )
 
@@ -30,6 +31,12 @@ func AddBlog(AuthorId int, Content string) error {
 		Content:  Content,
 	}
 	result := db.Create(&blog)
+	// 定义 Redis 里的缓存键
+	cacheKey := fmt.Sprintf("AllBlogs:")
+	_, err := rdb.Del(ctx, cacheKey).Result()
+	if err != nil {
+		log.Fatalf("Failed to connect to Redis: %v", err)
+	}
 	return result.Error
 }
 
@@ -80,11 +87,23 @@ func GetAllBlogs() ([]*BlogsWithName, error) {
 // DeleteBlogById 根据 Id 删除相关的 Blog
 func DeleteBlogById(BlogId int) error {
 	result := db.Where("id = ?", BlogId).Delete(&Blogs{})
+	// 定义 Redis 里的缓存键
+	cacheKey := fmt.Sprintf("AllBlogs:")
+	_, err := rdb.Del(ctx, cacheKey).Result()
+	if err != nil {
+		log.Fatalf("Failed to connect to Redis: %v", err)
+	}
 	return result.Error
 }
 
 // ModifyBlogById 根据 Id 更改相关的 Blog
 func ModifyBlogById(BlogId int, Content string) error {
 	result := db.Model(&Blogs{}).Where("id = ?", BlogId).Update("content", Content)
+	// 定义 Redis 里的缓存键
+	cacheKey := fmt.Sprintf("AllBlogs:")
+	_, err := rdb.Del(ctx, cacheKey).Result()
+	if err != nil {
+		log.Fatalf("Failed to connect to Redis: %v", err)
+	}
 	return result.Error
 }
