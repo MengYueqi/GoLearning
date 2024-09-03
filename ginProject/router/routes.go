@@ -2,15 +2,17 @@ package router
 
 import (
 	"ginProject/controllers"
+	"ginProject/services"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func corsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*") // 允许所有域（生产环境中应根据需要进行限制）
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Authorization, Content-Type, X-CSRF-Token")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
 
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusOK)
@@ -41,10 +43,10 @@ func SetupRouter() *gin.Engine {
 	r.POST("/login", controllers.Login)
 
 	// 博客操作
-	r.POST("/GetAllBlogsById", controllers.GetAllBlogsById)
+	r.POST("/GetAllBlogsById", services.JWTAuthMiddleware(), controllers.GetAllBlogsById)
 	r.POST("/addBlog", controllers.AddBlog)
 	r.POST("/deleteBlog", controllers.DeleteBlog)
-	r.POST("/getAllBlogs", controllers.GetAllBlogs)
+	r.POST("/getAllBlogs", services.JWTAuthMiddleware(), controllers.GetAllBlogs)
 	r.POST("/modifyBlogById", controllers.ModifyBlogById)
 
 	// 评论操作

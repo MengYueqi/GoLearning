@@ -18,6 +18,7 @@
 <script>
 import axios from 'axios';
 import router from "@/router";
+import {jwtDecode} from "jwt-decode";
 
 export default {
   data() {
@@ -34,8 +35,17 @@ export default {
           password: this.password
         });
         console.log('Login successful:', response.data);
-        // 在这里处理成功的登录逻辑，例如跳转到首页
-        router.push('/home')
+
+        // 存储 token 在 localStorage
+        const token = response.data.token;
+        localStorage.setItem('token', token);
+
+        // 解码 JWT 获取用户信息
+        const decoded = jwtDecode(token);
+        console.log('Decoded JWT:', decoded);
+
+        // 跳转到首页
+        router.push('/allBlogs');
       } catch (error) {
         console.error('Error during login:', error.response ? error.response.data : error.message);
         // 在这里处理登录失败的情况

@@ -3,13 +3,23 @@ package controllers
 import (
 	"fmt"
 	"ginProject/dao"
+	"ginProject/services"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
+var jwtKey = []byte("your_secret_key") // 替换为自己的密钥
+
 type LoginRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+type Claims struct {
+	Username string `json:"username"`
+	UserId   uint   `json:"user_id"`
+	jwt.StandardClaims
 }
 
 func LoginPage(c *gin.Context) {
@@ -32,17 +42,15 @@ func Login(c *gin.Context) {
 	password := loginReq.Password
 	fmt.Println(username, password)
 
-	user, error := dao.GetUserByUsername(username)
+	user, _ := dao.GetUserByUsername(username)
 
-	// 这里可以添加用户名和密码的验证逻辑
-	if user != nil && user.Password == password {
-		c.JSON(http.StatusOK, gin.H{
-			"status": "Login successful",
-		})
-	} else {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"status": "Login failed",
-		})
-		fmt.Print(error)
+	// 使用 JWT 鉴权
+	tokenString, err := services.GenerateJWT(user.Username, user.User_id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create token"})
+		return
 	}
+
+	// 返回Token
+	c.JSON(http.StatusOK, gin.H{"token": tokenString})
 }
