@@ -52,6 +52,10 @@ Use Vue3 to complete the front-end design, request data from the back-end accord
 
 Use MySQL to store data persistently and provide it to the backend interface for adding, deleting, modifying and querying data.
 
+#### Gorm
+
+Gorm is a full-featured ORM library for the Go language, which provides an object-oriented way to operate the database, supports automatic migration, transaction management, and complex queries. Use Gorm to operate data in MySQL to improve the efficiency and convenience of operations.
+
 #### Redis
 
 Use Redis to cache hot data. The backend first searches for data in Redis to reduce the pressure on the MySQL database.
@@ -59,4 +63,14 @@ Use Redis to cache hot data. The backend first searches for data in Redis to red
 #### JWT
 
 Use JWT technology to authenticate users. The front end receives the JWT token and processes and saves it. The JWT token is then carried in the request and authenticated by the back end. Data is returned only if it meets the conditions to ensure data security.
+
+#### Docker
+
+Using Docker for containerized deployment makes the backend and frontend highly portable, suitable for more types of platforms, and reduces the difficulty of deployment.
+
+#### TODO
+
+Frontend
+
+Nginx
 
