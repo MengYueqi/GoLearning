@@ -38,6 +38,7 @@ The following operations were performed on the database using gorm:
     </tbody>
 </table>
 </details>
+
 ### Technology Stack
 
 #### Gin
