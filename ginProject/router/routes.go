@@ -28,7 +28,7 @@ func SetupRouter() *gin.Engine {
 	// gin.DisableConsoleColor()
 	r := gin.Default()
 	r.Use(corsMiddleware())
-	r.LoadHTMLGlob("templates/*")
+	//r.LoadHTMLGlob("templates/*")
 
 	// Ping test
 	r.GET("/ping", func(c *gin.Context) {
