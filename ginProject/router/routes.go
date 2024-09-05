@@ -38,20 +38,20 @@ func SetupRouter() *gin.Engine {
 	// Login 对应的路由
 	r.GET("/", controllers.LoginPage)
 	// HomePage 对应的路由
-	r.GET("/home", controllers.HomePage)
+	r.GET("/api/home", controllers.HomePage)
 	// 登录检查
-	r.POST("/login", controllers.Login)
+	r.POST("/api/login", controllers.Login)
 
 	// 博客操作
-	r.POST("/GetAllBlogsById", services.JWTAuthMiddleware(), controllers.GetAllBlogsById)
-	r.POST("/addBlog", controllers.AddBlog)
-	r.POST("/deleteBlog", controllers.DeleteBlog)
-	r.POST("/getAllBlogs", services.JWTAuthMiddleware(), controllers.GetAllBlogs)
-	r.POST("/modifyBlogById", controllers.ModifyBlogById)
+	r.POST("/api/GetAllBlogsById", services.JWTAuthMiddleware(), controllers.GetAllBlogsById)
+	r.POST("/api/addBlog", controllers.AddBlog)
+	r.POST("/api/deleteBlog", controllers.DeleteBlog)
+	r.POST("/api/getAllBlogs", services.JWTAuthMiddleware(), controllers.GetAllBlogs)
+	r.POST("/api/modifyBlogById", controllers.ModifyBlogById)
 
 	// 评论操作
-	r.POST("/getAllCommentsById", controllers.GetAllCommentsById)
-	r.POST("/addCommentById", controllers.AddCommentById)
+	r.POST("/api/getAllCommentsById", controllers.GetAllCommentsById)
+	r.POST("/api/addCommentById", controllers.AddCommentById)
 
 	return r
 }

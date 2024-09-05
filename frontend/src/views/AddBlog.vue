@@ -26,7 +26,7 @@ const statusMessage = ref('')
 
 const submitBlog = async () => {
   try {
-    const response = await axios.post('http://localhost:8081/addBlog', {
+    const response = await axios.post('http://localhost:8081/api/addBlog', {
       AuthorId: parseInt(authorId.value),
       Content: content.value
     })

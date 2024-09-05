@@ -30,7 +30,7 @@ const editingContent = ref('')
 
 const fetchBlogs = async () => {
   try {
-    const response = await axios.post('http://localhost:8081/GetAllBlogsById', {
+    const response = await axios.post('http://localhost:8081/api/GetAllBlogsById', {
       userId: 1
     })
     const data = response.data
@@ -43,7 +43,7 @@ const fetchBlogs = async () => {
 
 const deleteBlog = async (blogId) => {
   try {
-    const response = await axios.post('http://localhost:8081/deleteBlog', {
+    const response = await axios.post('http://localhost:8081/api/deleteBlog', {
       blogId: blogId
     })
     if (response.data.status === 'success') {
@@ -72,7 +72,7 @@ const isEditing = (blogId) => {
 
 const updateBlog = async (blogId) => {
   try {
-    const response = await axios.post('http://localhost:8081/modifyBlogById', {
+    const response = await axios.post('http://localhost:8081/api/modifyBlogById', {
       BlogId: blogId,
       Content: editingContent.value
     })

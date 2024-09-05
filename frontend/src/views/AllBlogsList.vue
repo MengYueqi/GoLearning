@@ -45,7 +45,7 @@ const newCommentContent = ref({}) // To store new comment content for each blog
 
 const fetchBlogs = async () => {
   try {
-    const response = await axios.post('http://localhost:8081/getAllBlogs', {
+    const response = await axios.post('http://localhost:8081/api/getAllBlogs', {
       userId: 1
     })
     const data = response.data
@@ -63,7 +63,7 @@ const fetchBlogs = async () => {
 
 const fetchCommentsForBlog = async (blog) => {
   try {
-    const response = await axios.post('http://localhost:8081/getAllCommentsById', {
+    const response = await axios.post('http://localhost:8081/api/getAllCommentsById', {
       blog_id: blog.Id
     })
     const data = response.data
@@ -82,7 +82,7 @@ const addComment = async (blogId) => {
   }
 
   try {
-    const response = await axios.post('http://localhost:8081/addCommentById', {
+    const response = await axios.post('http://localhost:8081/api/addCommentById', {
       blog_id: blogId,
       user_id: 1,  // Assuming user_id is 1; adjust as needed
       content: content
