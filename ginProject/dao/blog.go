@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"gorm.io/gorm"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -22,6 +23,11 @@ type Blogs struct {
 	CreatedAt time.Time
 	AuthorId  int
 	Content   string
+}
+
+type BlogLike struct {
+	BlogId int
+	UserId int
 }
 
 // AddBlog 增加一个 Blog
@@ -50,6 +56,48 @@ func GetAllBlogsById(AuthorId int) ([]*BlogsWithName, error) {
 		return nil, nil
 	}
 	return blogs, result.Error
+}
+
+// LikeBlog 根据 Id 对 Blog 进行点赞
+func LikeBlog(blogId int, userId int) error {
+	blogLike := BlogLike{
+		BlogId: blogId,
+		UserId: userId,
+	}
+	err := db.Create(&blogLike).Error
+	if err != nil {
+		return err
+	} else {
+		return nil
+	}
+}
+
+// GetBlogLikesById 根据 Id 获取 Blog 的点赞数
+func GetBlogLikesById(blogId int) (int64, error) {
+	var count int64
+
+	key := fmt.Sprintf("blog:likes:%d", blogId)
+	// 从 Redis 获取缓存
+	likesStr, err := rdb.Get(ctx, key).Result()
+	if err == nil {
+		// 成功命中缓存
+		count, convErr := strconv.ParseInt(likesStr, 10, 64)
+		fmt.Println(key + " Like Num Find in Redis!")
+		if convErr == nil {
+			return count, nil
+		}
+	}
+
+	// 解析失败就继续查数据库
+	result := db.Model(&BlogLike{}).Where("blog_id = ?", blogId).Count(&count)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	// 将结果写入 Redis，设置过期时间 10 分钟
+	rdb.Set(ctx, key, strconv.FormatInt(count, 10), 10*time.Minute)
+
+	return count, nil
 }
 
 // GetAllBlogs 获取所有博客

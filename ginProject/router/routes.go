@@ -50,6 +50,8 @@ func SetupRouter() *gin.Engine {
 	r.POST("/api/deleteBlog", controllers.DeleteBlog)
 	r.POST("/api/getAllBlogs", services.JWTAuthMiddleware(), controllers.GetAllBlogs)
 	r.POST("/api/modifyBlogById", controllers.ModifyBlogById)
+	r.POST("/api/likeBlog", controllers.LikeBlog)
+	r.POST("/api/getBlogLikesById", controllers.GetBlogLikesById)
 
 	// 评论操作
 	r.POST("/api/getAllCommentsById", controllers.GetAllCommentsById)

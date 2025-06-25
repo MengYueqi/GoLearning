@@ -25,6 +25,15 @@ type ModifyBlogForm struct {
 	Content string `json:"content"`
 }
 
+type LikeBlogForm struct {
+	BlogId int `json:"blog_id"`
+	UserId int `json:"user_id"`
+}
+
+type BlogLikeNumForm struct {
+	BlogId int `json:"blog_id"`
+}
+
 func GetAllBlogsById(c *gin.Context) {
 	var blogForm BlogForm
 
@@ -51,6 +60,49 @@ func GetAllBlogs(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"blogs": blogs,
 	})
+}
+
+func LikeBlog(c *gin.Context) {
+	var likeBlogForm LikeBlogForm
+
+	// 获取并解析 JSON 数据
+	if err := c.ShouldBind(&likeBlogForm); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	blogid, userid := likeBlogForm.BlogId, likeBlogForm.UserId
+	err := dao.LikeBlog(blogid, userid)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"status": "success",
+		})
+	}
+
+}
+
+func GetBlogLikesById(c *gin.Context) {
+	var blogLikesNumForm BlogLikeNumForm
+
+	// 获取并解析 JSON 数据
+	if err := c.ShouldBind(&blogLikesNumForm); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON", "num": -1}) // 出现问题返回 -1
+		return
+	}
+
+	blogId := blogLikesNumForm.BlogId
+	num, err := dao.GetBlogLikesById(blogId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "num": -1}) // 出现问题返回 -1
+		return
+	} else {
+		c.JSON(http.StatusOK, gin.H{"error": nil, "num": num}) // 返回点赞数
+		return
+	}
+
 }
 
 func AddBlog(c *gin.Context) {

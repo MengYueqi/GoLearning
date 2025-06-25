@@ -7,6 +7,12 @@
         <p>{{ blog.Content }}</p>
         <small>Created At: {{ formatDate(blog.CreatedAt) }}</small>
 
+        <!-- Like Button -->
+        <div style="margin: 10px 0;">
+          <button class="like-btn" @click="likeBlog(blog.Id)">👍 Like</button>
+          <span style="margin-left: 10px;">{{ blog.Likes }} Likes</span>
+        </div>
+
         <!-- Render Comments -->
         <div v-if="blog.comments && blog.comments.length > 0">
           <h4>Comments:</h4>
@@ -41,8 +47,9 @@ import axios from 'axios'
 
 const authorId = ref(null)
 const blogs = ref([])
-const newCommentContent = ref({}) // To store new comment content for each blog
+const newCommentContent = ref({})
 
+// 获取博客列表及其评论和点赞
 const fetchBlogs = async () => {
   try {
     const response = await axios.post('http://localhost:8081/api/getAllBlogs', {
@@ -52,15 +59,30 @@ const fetchBlogs = async () => {
     authorId.value = data.authorId
     blogs.value = data.blogs
 
-    // Fetch comments for each blog
     for (const blog of blogs.value) {
-      await fetchCommentsForBlog(blog)
+      await fetchLikesForBlog(blog)         // 👍 获取点赞数
+      await fetchCommentsForBlog(blog)      // 💬 获取评论
     }
   } catch (error) {
     console.error('Error fetching blogs:', error)
   }
 }
 
+// 获取点赞数
+const fetchLikesForBlog = async (blog) => {
+  try {
+    const response = await axios.post('http://localhost:8081/api/getBlogLikesById', {
+      blog_id: blog.Id
+    })
+    const data = response.data
+    blog.Likes = data.num || 0
+  } catch (error) {
+    console.error(`Error fetching likes for blog ID ${blog.Id}:`, error)
+    blog.Likes = 0
+  }
+}
+
+// 获取评论
 const fetchCommentsForBlog = async (blog) => {
   try {
     const response = await axios.post('http://localhost:8081/api/getAllCommentsById', {
@@ -70,10 +92,11 @@ const fetchCommentsForBlog = async (blog) => {
     blog.comments = data.comments
   } catch (error) {
     console.error(`Error fetching comments for blog ID ${blog.Id}:`, error)
-    blog.comments = []  // Ensure comments is initialized
+    blog.comments = []
   }
 }
 
+// 添加评论
 const addComment = async (blogId) => {
   const content = newCommentContent.value[blogId]
   if (!content) {
@@ -84,25 +107,21 @@ const addComment = async (blogId) => {
   try {
     const response = await axios.post('http://localhost:8081/api/addCommentById', {
       blog_id: blogId,
-      user_id: 1,  // Assuming user_id is 1; adjust as needed
+      user_id: 1, // 假设当前用户 ID 为 1
       content: content
     })
 
     if (response.data.status === 'success') {
       alert('Comment added successfully!')
-
-      // Add the new comment to the local comments array
       const blog = blogs.value.find(b => b.Id === blogId)
       if (blog) {
         blog.comments.push({
-          Id: new Date().getTime(),  // Generate a temporary unique ID for the new comment
-          Username: 'Current User',  // Replace with the actual username if available
+          Id: new Date().getTime(),
+          Username: 'Current User',
           Content: content,
           CreatedAt: new Date().toISOString()
         })
       }
-
-      // Clear the input field
       newCommentContent.value[blogId] = ''
     }
   } catch (error) {
@@ -110,6 +129,28 @@ const addComment = async (blogId) => {
   }
 }
 
+// 点赞博客
+const likeBlog = async (blogId) => {
+  try {
+    const response = await axios.post('http://localhost:8081/api/likeBlog', {
+      blog_id: blogId,
+      user_id: 1
+    })
+
+    if (response.data.status === 'success') {
+      const blog = blogs.value.find(b => b.Id === blogId)
+      if (blog) {
+        blog.Likes = response.data.num
+      }
+    } else {
+      alert('Failed to like the blog.')
+    }
+  } catch (error) {
+    console.error(`Error liking blog ID ${blogId}:`, error)
+  }
+}
+
+// 时间格式化
 const formatDate = (dateString) => {
   const date = new Date(dateString)
   return date.toLocaleString()
@@ -131,7 +172,6 @@ li {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  position: relative;
 }
 h3 {
   margin: 0 0 5px;
@@ -161,5 +201,11 @@ button {
 }
 button:hover {
   background-color: #0056b3;
+}
+button.like-btn {
+  background-color: #28a745;
+}
+button.like-btn:hover {
+  background-color: #1e7e34;
 }
 </style>
