@@ -22,6 +22,37 @@ func GetAllUsers() ([]User, error) {
 	return users, result.Error
 }
 
+func AddUser(username string, password string, email string) error {
+
+	var existingUser User // 你的模型结构体，比如 User{}
+
+	// 从数据库里获取数据
+	result := db.Where("username = ?", username).First(&existingUser)
+	// 数据库里没有该 username
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		// 获取最大 userID
+		var maxID int
+		err := db.Model(&User{}).Select("MAX(user_id)").Scan(&maxID).Error
+		if err != nil {
+			return err
+		}
+		newUser := User{
+			User_id:  uint(maxID + 1),
+			Username: username,
+			Email:    email,
+			Password: password, // ⚠️ 实际应加密处理
+		}
+		result = db.Create(&newUser)
+		if result.Error != nil {
+			return result.Error
+		} else {
+			return nil
+		}
+	} else {
+		return errors.New("username already exists")
+	}
+}
+
 func GetUserByUsername(username string) (*User, error) {
 	// 定义 Redis 中的缓存键
 	cacheKey := fmt.Sprintf("user:username:%s", username)

@@ -25,3 +25,7 @@ func longestValidParentheses(s string) int {
 	}
 	return maxNum
 }
+
+func main() {
+	longestValidParentheses("()())")
+}

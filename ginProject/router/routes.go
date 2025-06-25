@@ -41,6 +41,8 @@ func SetupRouter() *gin.Engine {
 	r.GET("/api/home", controllers.HomePage)
 	// 登录检查
 	r.POST("/api/login", controllers.Login)
+	// 注册检查
+	r.POST("/api/register", controllers.Register)
 
 	// 博客操作
 	r.POST("/api/GetAllBlogsById", services.JWTAuthMiddleware(), controllers.GetAllBlogsById)

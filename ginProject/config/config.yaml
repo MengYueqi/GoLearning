@@ -1,0 +1,14 @@
+database:
+  user: "root"          # 数据库用户名
+  password: "myq20021122"  # 数据库密码
+  host: "localhost"             # 数据库主机地址
+  port: 3306                    # 数据库端口
+  dbname: "GINTABLE"  # 数据库名称
+  charset: "utf8mb4"            # 字符集
+  parseTime: true               # 是否解析时间
+  loc: "Local"                  # 时区
+
+redis:
+  addr: "localhost:6379"        # Redis地址
+  password: ""                  # Redis密码（默认为空）
+  db: 0                         # Redis数据库编号

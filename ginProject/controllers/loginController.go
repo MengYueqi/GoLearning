@@ -22,6 +22,39 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+type RegisterRequest struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func Register(c *gin.Context) {
+	var registerReq RegisterRequest
+
+	// 获取并解析 JSON 数据
+	if err := c.ShouldBind(&registerReq); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	// 获取用户名和密码
+	username := registerReq.Username
+	password := registerReq.Password
+	email := registerReq.Email
+	fmt.Println(username, password, email)
+
+	// 调用 dao 层
+	err := dao.AddUser(username, password, email)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"error": ""})
+
+}
+
 func LoginPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "login.html", gin.H{
 		"title": "Login",

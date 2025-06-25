@@ -69,9 +69,11 @@ Use JWT technology to authenticate users. The front end receives the JWT token a
 
 Using Docker for containerized deployment makes the backend and frontend highly portable, suitable for more types of platforms, and reduces the difficulty of deployment.
 
+#### Nginx
+Use Nginx for reverse proxy and load balancing to implement server cluster deployment and reasonably distribute requests.
+
+
 #### TODO
 
 Frontend
-
-Nginx
 
