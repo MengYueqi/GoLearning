@@ -26,6 +26,14 @@ type Blogs struct {
 	Content   string
 }
 
+type BlogsWithLikes struct {
+	Id        int `gorm:"primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	AuthorId  int
+	Content   string
+	Likes     int
+}
+
 type BlogLike struct {
 	BlogId int
 	UserId int
@@ -45,6 +53,24 @@ func AddBlog(AuthorId int, Content string) error {
 		log.Fatalf("Failed to connect to Redis: %v", err)
 	}
 	return result.Error
+}
+
+// GetNTopBlog 获取点赞数前 N 的 Blog
+func GetNTopBlog(N int) ([]*BlogsWithLikes, error) {
+	var nTopBlogs []*BlogsWithLikes
+
+	err := db.Table("blogs").
+		Select("blogs.id, blogs.content, blogs.author_id, COUNT(*) as likes").
+		Joins("LEFT JOIN blog_likes ON blogs.id = blog_likes.blog_id").
+		Group("blogs.id").
+		Order("likes DESC").
+		Limit(N).Scan(&nTopBlogs).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return nTopBlogs, nil
+
 }
 
 // GetAllBlogsById 根据 Id 获取所有的 Blogs

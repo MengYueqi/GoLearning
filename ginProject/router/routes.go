@@ -52,6 +52,7 @@ func SetupRouter() *gin.Engine {
 	r.POST("/api/modifyBlogById", controllers.ModifyBlogById)
 	r.POST("/api/likeBlog", controllers.LikeBlog)
 	r.POST("/api/getBlogLikesById", controllers.GetBlogLikesById)
+	r.POST("/api/getNTopBlogs", controllers.GetNTopBlog)
 
 	// 评论操作
 	r.POST("/api/getAllCommentsById", controllers.GetAllCommentsById)

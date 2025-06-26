@@ -34,6 +34,10 @@ type BlogLikeNumForm struct {
 	BlogId int `json:"blog_id"`
 }
 
+type NLikeBlogForm struct {
+	N int `json:"n"`
+}
+
 func GetAllBlogsById(c *gin.Context) {
 	var blogForm BlogForm
 
@@ -60,6 +64,25 @@ func GetAllBlogs(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"blogs": blogs,
 	})
+}
+
+func GetNTopBlog(c *gin.Context) {
+	var nLikeBlogForm NLikeBlogForm
+
+	// 获取 JSON 数据
+	if err := c.ShouldBind(&nLikeBlogForm); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+	N := nLikeBlogForm.N
+
+	blogs, err := dao.GetNTopBlog(N)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"error": nil, "blogs": blogs})
+	return
 }
 
 func LikeBlog(c *gin.Context) {

@@ -22,6 +22,11 @@ const routes = [
         component: () => import('@/views/AddBlog.vue')
     },
     {
+        path: '/nTopBlogs',
+        name: 'nTopBlogs',
+        component: () => import('@/views/NTopBlogs.vue')
+    },
+    {
         path: '/allBlogs',
         name: 'allBlogs',
         component: () => import('@/views/AllBlogsList.vue')
