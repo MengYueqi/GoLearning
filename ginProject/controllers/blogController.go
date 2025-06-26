@@ -75,10 +75,15 @@ func LikeBlog(c *gin.Context) {
 	err := dao.LikeBlog(blogid, userid)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "num": -1})
 	} else {
+		likeNum, err := dao.GetBlogLikesById(blogid)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "num": -1})
+		}
 		c.JSON(http.StatusOK, gin.H{
 			"status": "success",
+			"num":    likeNum,
 		})
 	}
 

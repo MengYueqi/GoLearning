@@ -60,15 +60,14 @@ const fetchBlogs = async () => {
     blogs.value = data.blogs
 
     for (const blog of blogs.value) {
-      await fetchLikesForBlog(blog)         // 👍 获取点赞数
-      await fetchCommentsForBlog(blog)      // 💬 获取评论
+      await fetchLikesForBlog(blog)
+      await fetchCommentsForBlog(blog)
     }
   } catch (error) {
     console.error('Error fetching blogs:', error)
   }
 }
 
-// 获取点赞数
 const fetchLikesForBlog = async (blog) => {
   try {
     const response = await axios.post('http://localhost:8081/api/getBlogLikesById', {
@@ -82,7 +81,6 @@ const fetchLikesForBlog = async (blog) => {
   }
 }
 
-// 获取评论
 const fetchCommentsForBlog = async (blog) => {
   try {
     const response = await axios.post('http://localhost:8081/api/getAllCommentsById', {
@@ -96,7 +94,6 @@ const fetchCommentsForBlog = async (blog) => {
   }
 }
 
-// 添加评论
 const addComment = async (blogId) => {
   const content = newCommentContent.value[blogId]
   if (!content) {
@@ -107,7 +104,7 @@ const addComment = async (blogId) => {
   try {
     const response = await axios.post('http://localhost:8081/api/addCommentById', {
       blog_id: blogId,
-      user_id: 1, // 假设当前用户 ID 为 1
+      user_id: 1,
       content: content
     })
 
@@ -129,7 +126,7 @@ const addComment = async (blogId) => {
   }
 }
 
-// 点赞博客
+// 点赞博客，添加错误提示
 const likeBlog = async (blogId) => {
   try {
     const response = await axios.post('http://localhost:8081/api/likeBlog', {
@@ -143,14 +140,15 @@ const likeBlog = async (blogId) => {
         blog.Likes = response.data.num
       }
     } else {
-      alert('Failed to like the blog.')
+      const errorMsg = response.data.error || '点赞失败：系统错误或你已经点赞过了。'
+      alert(errorMsg)
     }
   } catch (error) {
     console.error(`Error liking blog ID ${blogId}:`, error)
+    alert('点赞失败：系统错误或你已经点赞过了。')
   }
 }
 
-// 时间格式化
 const formatDate = (dateString) => {
   const date = new Date(dateString)
   return date.toLocaleString()

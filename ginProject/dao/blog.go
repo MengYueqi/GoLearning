@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
 	"log"
 	"strconv"
@@ -64,12 +65,37 @@ func LikeBlog(blogId int, userId int) error {
 		BlogId: blogId,
 		UserId: userId,
 	}
+
+	// 将点赞记录保存到 MySQL
 	err := db.Create(&blogLike).Error
 	if err != nil {
 		return err
 	} else {
+		// 重写 Redis 数据
+		key := fmt.Sprintf("blog:likes:%d", blogId)
+		// 尝试获取当前值
+		val, err := rdb.Get(ctx, key).Result()
+		if err == redis.Nil {
+			// key 不存在，不做操作
+			return nil
+		} else if err != nil {
+			// 其他错误
+			return err
+		}
+		// 将值转为整数
+		count, err := strconv.Atoi(val)
+		if err != nil {
+			return err
+		}
+		count++
+
+		err = rdb.Set(ctx, key, count, 10*time.Minute).Err()
+		if err != nil {
+			return err
+		}
 		return nil
 	}
+
 }
 
 // GetBlogLikesById 根据 Id 获取 Blog 的点赞数
