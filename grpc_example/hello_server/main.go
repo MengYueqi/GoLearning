@@ -8,6 +8,7 @@ import (
 	bookpb "github.com/testProject/pb/book"
 	"google.golang.org/grpc"
 	"net"
+	"strconv"
 )
 
 // hello server
@@ -26,7 +27,7 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 }
 
 func (s *BookServiceImpl) Create(ctx context.Context, bookMsg *bookpb.Book) (*bookpb.BookCreateResponse, error) {
-	return &bookpb.BookCreateResponse{Result: "The Book Name is: " + bookMsg.Title}, nil
+	return &bookpb.BookCreateResponse{Result: "The Book Name is: " + bookMsg.Title + "\nThe Book Author is: " + bookMsg.AuthorInfo.GetName() + "\nThe sale Price is: " + strconv.Itoa(int(bookMsg.Price.GetSalePrice()))}, nil
 }
 
 func main() {
