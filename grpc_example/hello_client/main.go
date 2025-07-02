@@ -6,8 +6,8 @@ import (
 	"log"
 	"time"
 
-	"hello_client/pb"
-
+	author "github.com/testProject/pb/author"
+	bookbp "github.com/testProject/pb/book"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -31,14 +31,19 @@ func main() {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	c := pb.NewGreeterClient(conn)
+	c := bookbp.NewBookServiceClient(conn)
 
 	// 执行RPC调用并打印收到的响应数据
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.SayHello(ctx, &pb.HelloRequest{Name: *name})
+	// 构造请求参数（BookMessage）
+	req := &bookbp.Book{Title: "BookExTitle",
+		Price:      &bookbp.Price{MarketPrice: 49, SalePrice: 29},
+		AuthorInfo: &author.Info{Name: "Mr. Zhang"}}
+	//r, err := c.SayHello(ctx, &pb.HelloRequest{Name: *name})
+	r, err := c.Create(ctx, req)
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
-	log.Printf("Greeting: %s", r.GetReply())
+	log.Printf("Greeting: %s", r.Result)
 }

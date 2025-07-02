@@ -1,0 +1,30 @@
+// demo/proto/book/book.proto
+
+syntax = "proto3";
+
+// 声明protobuf中的包名
+package book;
+
+// 声明生成的Go代码的导入路径
+option go_package = "github.com/testProject/pb/book";
+
+// 引入同目录下的protobuf文件（注意起始位置为proto_path的下层）
+import "book/price.proto";
+// 引入author
+import "author/author.proto";
+
+message Book {
+    string title = 1;
+    Price price = 2;
+    author.Info authorInfo = 3;
+    reserved 4, 5;
+}
+
+message BookCreateResponse {
+    string result = 1;
+}
+
+// 实现一个 Book 相关的方法
+service BookService {
+    rpc Create(Book)returns(BookCreateResponse){};
+}
