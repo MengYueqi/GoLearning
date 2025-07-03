@@ -14,6 +14,7 @@ import (
 	author "github.com/testProject/pb/author"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -27,10 +28,11 @@ const (
 )
 
 type Book struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Title         string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
-	Price         *Price                 `protobuf:"bytes,2,opt,name=price,proto3" json:"price,omitempty"`
-	AuthorInfo    *author.Info           `protobuf:"bytes,3,opt,name=authorInfo,proto3" json:"authorInfo,omitempty"`
+	state         protoimpl.MessageState  `protogen:"open.v1"`
+	Title         string                  `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Price         *Price                  `protobuf:"bytes,2,opt,name=price,proto3" json:"price,omitempty"`
+	AuthorInfo    *author.Info            `protobuf:"bytes,3,opt,name=authorInfo,proto3" json:"authorInfo,omitempty"`
+	Idx           *wrapperspb.StringValue `protobuf:"bytes,6,opt,name=idx,proto3" json:"idx,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -86,6 +88,13 @@ func (x *Book) GetAuthorInfo() *author.Info {
 	return nil
 }
 
+func (x *Book) GetIdx() *wrapperspb.StringValue {
+	if x != nil {
+		return x.Idx
+	}
+	return nil
+}
+
 type BookCreateResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Result        string                 `protobuf:"bytes,1,opt,name=result,proto3" json:"result,omitempty"`
@@ -134,13 +143,14 @@ var File_book_book_proto protoreflect.FileDescriptor
 
 const file_book_book_proto_rawDesc = "" +
 	"\n" +
-	"\x0fbook/book.proto\x12\x04book\x1a\x10book/price.proto\x1a\x13author/author.proto\"y\n" +
+	"\x0fbook/book.proto\x12\x04book\x1a\x10book/price.proto\x1a\x13author/author.proto\x1a\x1egoogle/protobuf/wrappers.proto\"\xa9\x01\n" +
 	"\x04Book\x12\x14\n" +
 	"\x05title\x18\x01 \x01(\tR\x05title\x12!\n" +
 	"\x05price\x18\x02 \x01(\v2\v.book.PriceR\x05price\x12,\n" +
 	"\n" +
 	"authorInfo\x18\x03 \x01(\v2\f.author.InfoR\n" +
-	"authorInfoJ\x04\b\x04\x10\x05J\x04\b\x05\x10\x06\",\n" +
+	"authorInfo\x12.\n" +
+	"\x03idx\x18\x06 \x01(\v2\x1c.google.protobuf.StringValueR\x03idxJ\x04\b\x04\x10\x05J\x04\b\x05\x10\x06\",\n" +
 	"\x12BookCreateResponse\x12\x16\n" +
 	"\x06result\x18\x01 \x01(\tR\x06result2?\n" +
 	"\vBookService\x120\n" +
@@ -161,21 +171,23 @@ func file_book_book_proto_rawDescGZIP() []byte {
 
 var file_book_book_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_book_book_proto_goTypes = []any{
-	(*Book)(nil),               // 0: book.Book
-	(*BookCreateResponse)(nil), // 1: book.BookCreateResponse
-	(*Price)(nil),              // 2: book.Price
-	(*author.Info)(nil),        // 3: author.Info
+	(*Book)(nil),                   // 0: book.Book
+	(*BookCreateResponse)(nil),     // 1: book.BookCreateResponse
+	(*Price)(nil),                  // 2: book.Price
+	(*author.Info)(nil),            // 3: author.Info
+	(*wrapperspb.StringValue)(nil), // 4: google.protobuf.StringValue
 }
 var file_book_book_proto_depIdxs = []int32{
 	2, // 0: book.Book.price:type_name -> book.Price
 	3, // 1: book.Book.authorInfo:type_name -> author.Info
-	0, // 2: book.BookService.Create:input_type -> book.Book
-	1, // 3: book.BookService.Create:output_type -> book.BookCreateResponse
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	4, // 2: book.Book.idx:type_name -> google.protobuf.StringValue
+	0, // 3: book.BookService.Create:input_type -> book.Book
+	1, // 4: book.BookService.Create:output_type -> book.BookCreateResponse
+	4, // [4:5] is the sub-list for method output_type
+	3, // [3:4] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_book_book_proto_init() }

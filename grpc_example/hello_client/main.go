@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 	"log"
 	"time"
 
@@ -37,9 +38,12 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	// 构造请求参数（BookMessage）
-	req := &bookbp.Book{Title: "BookExTitle",
+	req := &bookbp.Book{
+		Title:      "BookExTitle",
 		Price:      &bookbp.Price{MarketPrice: 49, SalePrice: 29},
-		AuthorInfo: &author.Info{Name: "Mr. Zhang"}}
+		AuthorInfo: &author.Info{Name: "Mr. Zhang"},
+		Idx:        &wrapperspb.StringValue{Value: "s123abc"},
+	}
 	//r, err := c.SayHello(ctx, &pb.HelloRequest{Name: *name})
 	r, err := c.Create(ctx, req)
 	if err != nil {
