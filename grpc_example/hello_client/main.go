@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"flag"
-	"google.golang.org/protobuf/types/known/wrapperspb"
+	"google.golang.org/protobuf/types/known/fieldmaskpb"
 	"log"
 	"time"
 
@@ -42,7 +42,7 @@ func main() {
 		Title:      "BookExTitle",
 		Price:      &bookbp.Price{MarketPrice: 49, SalePrice: 29},
 		AuthorInfo: &author.Info{Name: "Mr. Zhang"},
-		Idx:        &wrapperspb.StringValue{Value: "s123abc"},
+		//Idx:        &wrapperspb.StringValue{Value: "s123abc"},
 	}
 	//r, err := c.SayHello(ctx, &pb.HelloRequest{Name: *name})
 	r, err := c.Create(ctx, req)
@@ -50,4 +50,20 @@ func main() {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("Greeting: %s", r.Result)
+
+	updateField := []string{"title"}
+	reqUpdate := &bookbp.BookUpdateMsg{
+		UpdateMask: &fieldmaskpb.FieldMask{Paths: updateField},
+		Book: &bookbp.Book{
+			Title:      "BookExTitle_Update",
+			Price:      &bookbp.Price{MarketPrice: 49, SalePrice: 29},
+			AuthorInfo: &author.Info{Name: "Mr. Zhang"},
+		},
+	}
+	rU, err := c.Update(ctx, reqUpdate)
+
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("Greeting: %s", rU.Result)
 }

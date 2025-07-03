@@ -13,6 +13,7 @@ import "book/price.proto";
 // 引入author
 import "author/author.proto";
 import "google/protobuf/wrappers.proto";
+import "google/protobuf/field_mask.proto";
 
 message Book {
     string title = 1;
@@ -26,7 +27,20 @@ message BookCreateResponse {
     string result = 1;
 }
 
+message BookUpdateMsg {
+    Book book = 1;
+    google.protobuf.FieldMask update_mask = 2;
+}
+
+message BookUpdateResponse {
+    string result = 1;
+}
+
 // 实现一个 Book 相关的方法
 service BookService {
+    // 创建一个 Book
     rpc Create(Book)returns(BookCreateResponse){};
+    // 更新 Book 的信息
+    rpc Update(BookUpdateMsg)returns(BookUpdateResponse){};
 }
+
