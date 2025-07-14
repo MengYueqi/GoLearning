@@ -236,6 +236,94 @@ func (x *BookUpdateResponse) GetResult() string {
 	return ""
 }
 
+type HotBooksRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Request       string                 `protobuf:"bytes,1,opt,name=request,proto3" json:"request,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *HotBooksRequest) Reset() {
+	*x = HotBooksRequest{}
+	mi := &file_book_book_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *HotBooksRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HotBooksRequest) ProtoMessage() {}
+
+func (x *HotBooksRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_book_book_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HotBooksRequest.ProtoReflect.Descriptor instead.
+func (*HotBooksRequest) Descriptor() ([]byte, []int) {
+	return file_book_book_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *HotBooksRequest) GetRequest() string {
+	if x != nil {
+		return x.Request
+	}
+	return ""
+}
+
+type HotBooksResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BookName      string                 `protobuf:"bytes,1,opt,name=bookName,proto3" json:"bookName,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *HotBooksResponse) Reset() {
+	*x = HotBooksResponse{}
+	mi := &file_book_book_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *HotBooksResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HotBooksResponse) ProtoMessage() {}
+
+func (x *HotBooksResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_book_book_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HotBooksResponse.ProtoReflect.Descriptor instead.
+func (*HotBooksResponse) Descriptor() ([]byte, []int) {
+	return file_book_book_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *HotBooksResponse) GetBookName() string {
+	if x != nil {
+		return x.BookName
+	}
+	return ""
+}
+
 var File_book_book_proto protoreflect.FileDescriptor
 
 const file_book_book_proto_rawDesc = "" +
@@ -256,11 +344,16 @@ const file_book_book_proto_rawDesc = "" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
 	"updateMask\",\n" +
 	"\x12BookUpdateResponse\x12\x16\n" +
-	"\x06result\x18\x01 \x01(\tR\x06result2z\n" +
+	"\x06result\x18\x01 \x01(\tR\x06result\"+\n" +
+	"\x0fHotBooksRequest\x12\x18\n" +
+	"\arequest\x18\x01 \x01(\tR\arequest\".\n" +
+	"\x10HotBooksResponse\x12\x1a\n" +
+	"\bbookName\x18\x01 \x01(\tR\bbookName2\xba\x01\n" +
 	"\vBookService\x120\n" +
 	"\x06Create\x12\n" +
 	".book.Book\x1a\x18.book.BookCreateResponse\"\x00\x129\n" +
-	"\x06Update\x12\x13.book.BookUpdateMsg\x1a\x18.book.BookUpdateResponse\"\x00B Z\x1egithub.com/testProject/pb/bookb\x06proto3"
+	"\x06Update\x12\x13.book.BookUpdateMsg\x1a\x18.book.BookUpdateResponse\"\x00\x12>\n" +
+	"\vGetHotBooks\x12\x15.book.HotBooksRequest\x1a\x16.book.HotBooksResponse0\x01B Z\x1egithub.com/testProject/pb/bookb\x06proto3"
 
 var (
 	file_book_book_proto_rawDescOnce sync.Once
@@ -274,29 +367,33 @@ func file_book_book_proto_rawDescGZIP() []byte {
 	return file_book_book_proto_rawDescData
 }
 
-var file_book_book_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_book_book_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_book_book_proto_goTypes = []any{
 	(*Book)(nil),                   // 0: book.Book
 	(*BookCreateResponse)(nil),     // 1: book.BookCreateResponse
 	(*BookUpdateMsg)(nil),          // 2: book.BookUpdateMsg
 	(*BookUpdateResponse)(nil),     // 3: book.BookUpdateResponse
-	(*Price)(nil),                  // 4: book.Price
-	(*author.Info)(nil),            // 5: author.Info
-	(*wrapperspb.StringValue)(nil), // 6: google.protobuf.StringValue
-	(*fieldmaskpb.FieldMask)(nil),  // 7: google.protobuf.FieldMask
+	(*HotBooksRequest)(nil),        // 4: book.HotBooksRequest
+	(*HotBooksResponse)(nil),       // 5: book.HotBooksResponse
+	(*Price)(nil),                  // 6: book.Price
+	(*author.Info)(nil),            // 7: author.Info
+	(*wrapperspb.StringValue)(nil), // 8: google.protobuf.StringValue
+	(*fieldmaskpb.FieldMask)(nil),  // 9: google.protobuf.FieldMask
 }
 var file_book_book_proto_depIdxs = []int32{
-	4, // 0: book.Book.price:type_name -> book.Price
-	5, // 1: book.Book.authorInfo:type_name -> author.Info
-	6, // 2: book.Book.idx:type_name -> google.protobuf.StringValue
+	6, // 0: book.Book.price:type_name -> book.Price
+	7, // 1: book.Book.authorInfo:type_name -> author.Info
+	8, // 2: book.Book.idx:type_name -> google.protobuf.StringValue
 	0, // 3: book.BookUpdateMsg.book:type_name -> book.Book
-	7, // 4: book.BookUpdateMsg.update_mask:type_name -> google.protobuf.FieldMask
+	9, // 4: book.BookUpdateMsg.update_mask:type_name -> google.protobuf.FieldMask
 	0, // 5: book.BookService.Create:input_type -> book.Book
 	2, // 6: book.BookService.Update:input_type -> book.BookUpdateMsg
-	1, // 7: book.BookService.Create:output_type -> book.BookCreateResponse
-	3, // 8: book.BookService.Update:output_type -> book.BookUpdateResponse
-	7, // [7:9] is the sub-list for method output_type
-	5, // [5:7] is the sub-list for method input_type
+	4, // 7: book.BookService.GetHotBooks:input_type -> book.HotBooksRequest
+	1, // 8: book.BookService.Create:output_type -> book.BookCreateResponse
+	3, // 9: book.BookService.Update:output_type -> book.BookUpdateResponse
+	5, // 10: book.BookService.GetHotBooks:output_type -> book.HotBooksResponse
+	8, // [8:11] is the sub-list for method output_type
+	5, // [5:8] is the sub-list for method input_type
 	5, // [5:5] is the sub-list for extension type_name
 	5, // [5:5] is the sub-list for extension extendee
 	0, // [0:5] is the sub-list for field type_name
@@ -314,7 +411,7 @@ func file_book_book_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_book_book_proto_rawDesc), len(file_book_book_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

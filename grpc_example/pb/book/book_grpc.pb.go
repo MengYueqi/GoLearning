@@ -23,8 +23,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	BookService_Create_FullMethodName = "/book.BookService/Create"
-	BookService_Update_FullMethodName = "/book.BookService/Update"
+	BookService_Create_FullMethodName      = "/book.BookService/Create"
+	BookService_Update_FullMethodName      = "/book.BookService/Update"
+	BookService_GetHotBooks_FullMethodName = "/book.BookService/GetHotBooks"
 )
 
 // BookServiceClient is the client API for BookService service.
@@ -37,6 +38,8 @@ type BookServiceClient interface {
 	Create(ctx context.Context, in *Book, opts ...grpc.CallOption) (*BookCreateResponse, error)
 	// 更新 Book 的信息
 	Update(ctx context.Context, in *BookUpdateMsg, opts ...grpc.CallOption) (*BookUpdateResponse, error)
+	// 获取常见热门书籍
+	GetHotBooks(ctx context.Context, in *HotBooksRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[HotBooksResponse], error)
 }
 
 type bookServiceClient struct {
@@ -67,6 +70,25 @@ func (c *bookServiceClient) Update(ctx context.Context, in *BookUpdateMsg, opts 
 	return out, nil
 }
 
+func (c *bookServiceClient) GetHotBooks(ctx context.Context, in *HotBooksRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[HotBooksResponse], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &BookService_ServiceDesc.Streams[0], BookService_GetHotBooks_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[HotBooksRequest, HotBooksResponse]{ClientStream: stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type BookService_GetHotBooksClient = grpc.ServerStreamingClient[HotBooksResponse]
+
 // BookServiceServer is the server API for BookService service.
 // All implementations must embed UnimplementedBookServiceServer
 // for forward compatibility.
@@ -77,6 +99,8 @@ type BookServiceServer interface {
 	Create(context.Context, *Book) (*BookCreateResponse, error)
 	// 更新 Book 的信息
 	Update(context.Context, *BookUpdateMsg) (*BookUpdateResponse, error)
+	// 获取常见热门书籍
+	GetHotBooks(*HotBooksRequest, grpc.ServerStreamingServer[HotBooksResponse]) error
 	mustEmbedUnimplementedBookServiceServer()
 }
 
@@ -92,6 +116,9 @@ func (UnimplementedBookServiceServer) Create(context.Context, *Book) (*BookCreat
 }
 func (UnimplementedBookServiceServer) Update(context.Context, *BookUpdateMsg) (*BookUpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+}
+func (UnimplementedBookServiceServer) GetHotBooks(*HotBooksRequest, grpc.ServerStreamingServer[HotBooksResponse]) error {
+	return status.Errorf(codes.Unimplemented, "method GetHotBooks not implemented")
 }
 func (UnimplementedBookServiceServer) mustEmbedUnimplementedBookServiceServer() {}
 func (UnimplementedBookServiceServer) testEmbeddedByValue()                     {}
@@ -150,6 +177,17 @@ func _BookService_Update_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BookService_GetHotBooks_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(HotBooksRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(BookServiceServer).GetHotBooks(m, &grpc.GenericServerStream[HotBooksRequest, HotBooksResponse]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type BookService_GetHotBooksServer = grpc.ServerStreamingServer[HotBooksResponse]
+
 // BookService_ServiceDesc is the grpc.ServiceDesc for BookService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -166,6 +204,12 @@ var BookService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _BookService_Update_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetHotBooks",
+			Handler:       _BookService_GetHotBooks_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "book/book.proto",
 }

@@ -36,11 +36,21 @@ message BookUpdateResponse {
     string result = 1;
 }
 
+message HotBooksRequest {
+    string request = 1;
+}
+
+message HotBooksResponse {
+    string bookName = 1;
+}
+
 // 实现一个 Book 相关的方法
 service BookService {
     // 创建一个 Book
     rpc Create(Book)returns(BookCreateResponse){};
     // 更新 Book 的信息
     rpc Update(BookUpdateMsg)returns(BookUpdateResponse){};
+    // 获取常见热门书籍
+    rpc GetHotBooks(HotBooksRequest) returns (stream HotBooksResponse);
 }
 

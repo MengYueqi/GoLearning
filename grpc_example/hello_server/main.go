@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc"
 	"net"
 	"strconv"
+	"time"
 )
 
 // hello server
@@ -55,6 +56,18 @@ func (s *BookServiceImpl) Update(ctx context.Context, bookUpdateMsg *bookpb.Book
 	resultMsg := fmt.Sprintf("bookDst:%#v\n", bookDst)
 	fmt.Println(resultMsg)
 	return &bookpb.BookUpdateResponse{Result: resultMsg}, nil
+}
+
+func (s *BookServiceImpl) GetHotBooks(booksReq *bookpb.HotBooksRequest, stream bookpb.BookService_GetHotBooksServer) error {
+	hotBooksName := []string{"ABCEnglish", "AAAChinese", "CCCMath"}
+	for _, word := range hotBooksName {
+		// 使用Send方法返回多个数据
+		if err := stream.Send(&bookpb.HotBooksResponse{BookName: booksReq.Request + word}); err != nil {
+			return err
+		}
+		time.Sleep(1 * time.Second)
+	}
+	return nil
 }
 
 func main() {
