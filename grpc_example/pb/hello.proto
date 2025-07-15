@@ -1,6 +1,7 @@
 syntax = "proto3"; // 版本声明，使用Protocol Buffers v3版本
 
 option go_package = "github.com/testProject/pb";  // 指定生成的Go代码在你项目中的导入路径
+import "google/api/annotations.proto";
 
 package pb; // 包名
 
@@ -8,7 +9,13 @@ package pb; // 包名
 // 定义服务
 service Greeter {
   // SayHello 方法
-  rpc SayHello (HelloRequest) returns (HelloResponse) {}
+  rpc SayHello (HelloRequest) returns (HelloResponse) {
+    // 这里添加了google.api.http注释
+    option (google.api.http) = {
+      post: "/v1/example/echo"
+      body: "*"
+    };
+  }
 }
 
 // 请求消息

@@ -3,13 +3,14 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
+	pb "github.com/testProject/pb"
+	bookbp "github.com/testProject/pb/book"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/credentials"
 	"io"
 	"log"
 	"time"
-
-	bookbp "github.com/testProject/pb/book"
 )
 
 // hello_client
@@ -24,13 +25,27 @@ var (
 )
 
 func getHotBooksName(c bookbp.BookServiceClient) {
-	// server端流式RPC
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	stream, err := c.GetHotBooks(ctx, &bookbp.HotBooksRequest{Request: "Meng"})
+	// 客户端流式RPC
+	stream, err := c.GetHotBooks(ctx)
 	if err != nil {
-		log.Fatalf("c.LotsOfReplies failed, err: %v", err)
+		log.Fatalf("c.LotsOfGreetings failed, err: %v", err)
 	}
+	names := []string{"七米", "q1mi", "沙河娜扎"}
+	for _, name := range names {
+		// 发送流式数据
+		err := stream.Send(&bookbp.HotBooksRequest{Request: name})
+		if err != nil {
+			log.Fatalf("c.LotsOfGreetings stream.Send(%v) failed, err: %v", name, err)
+		}
+	}
+	stream.CloseSend()
+	//in, err := stream.Recv()
+	//stream, err = c.GetHotBooks(ctx, &bookbp.HotBooksRequest{Request: "Meng"})
+	//if err != nil {
+	//	log.Fatalf("c.LotsOfReplies failed, err: %v", err)
+	//}
 	for {
 		// 接收服务端返回的流式数据，当收到io.EOF或错误时退出
 		res, err := stream.Recv()
@@ -86,10 +101,24 @@ func main() {
 	//	log.Fatalf("could not greet: %v", err)
 	//}
 	//log.Printf("Greeting: %s", rU.Result)
-	conn, err := grpc.NewClient(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	creds, err := credentials.NewClientTLSFromFile("../cert/server.crt", "")
+	if err != nil {
+		log.Fatalf("Failed to create TLS credentials %v", err)
+	}
+	conn, err := grpc.NewClient(*addr, grpc.WithTransportCredentials(creds))
+	//conn, err := grpc.NewClient(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	getHotBooksName(bookbp.NewBookServiceClient(conn))
+	c := pb.NewGreeterClient(conn)
+	// 执行RPC调用并打印收到的响应数据
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := c.SayHello(ctx, &pb.HelloRequest{Name: "Meng"})
+	if err != nil {
+		log.Fatalf("SayHello failed, err: %v", err)
+	} else {
+		fmt.Println(r)
+	}
 }

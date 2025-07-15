@@ -51,6 +51,6 @@ service BookService {
     // 更新 Book 的信息
     rpc Update(BookUpdateMsg)returns(BookUpdateResponse){};
     // 获取常见热门书籍
-    rpc GetHotBooks(HotBooksRequest) returns (stream HotBooksResponse);
+    rpc GetHotBooks(stream HotBooksRequest) returns (stream HotBooksResponse);
 }
 

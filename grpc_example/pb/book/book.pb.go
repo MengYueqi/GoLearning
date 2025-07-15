@@ -348,12 +348,12 @@ const file_book_book_proto_rawDesc = "" +
 	"\x0fHotBooksRequest\x12\x18\n" +
 	"\arequest\x18\x01 \x01(\tR\arequest\".\n" +
 	"\x10HotBooksResponse\x12\x1a\n" +
-	"\bbookName\x18\x01 \x01(\tR\bbookName2\xba\x01\n" +
+	"\bbookName\x18\x01 \x01(\tR\bbookName2\xbc\x01\n" +
 	"\vBookService\x120\n" +
 	"\x06Create\x12\n" +
 	".book.Book\x1a\x18.book.BookCreateResponse\"\x00\x129\n" +
-	"\x06Update\x12\x13.book.BookUpdateMsg\x1a\x18.book.BookUpdateResponse\"\x00\x12>\n" +
-	"\vGetHotBooks\x12\x15.book.HotBooksRequest\x1a\x16.book.HotBooksResponse0\x01B Z\x1egithub.com/testProject/pb/bookb\x06proto3"
+	"\x06Update\x12\x13.book.BookUpdateMsg\x1a\x18.book.BookUpdateResponse\"\x00\x12@\n" +
+	"\vGetHotBooks\x12\x15.book.HotBooksRequest\x1a\x16.book.HotBooksResponse(\x010\x01B Z\x1egithub.com/testProject/pb/bookb\x06proto3"
 
 var (
 	file_book_book_proto_rawDescOnce sync.Once
