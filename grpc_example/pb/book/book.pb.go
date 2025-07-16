@@ -12,6 +12,7 @@ package book
 
 import (
 	author "github.com/testProject/pb/author"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
@@ -328,7 +329,7 @@ var File_book_book_proto protoreflect.FileDescriptor
 
 const file_book_book_proto_rawDesc = "" +
 	"\n" +
-	"\x0fbook/book.proto\x12\x04book\x1a\x10book/price.proto\x1a\x13author/author.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a google/protobuf/field_mask.proto\"\xa9\x01\n" +
+	"\x0fbook/book.proto\x12\x04book\x1a\x10book/price.proto\x1a\x13author/author.proto\x1a\x1egoogle/protobuf/wrappers.proto\x1a google/protobuf/field_mask.proto\x1a\x1cgoogle/api/annotations.proto\"\xa9\x01\n" +
 	"\x04Book\x12\x14\n" +
 	"\x05title\x18\x01 \x01(\tR\x05title\x12!\n" +
 	"\x05price\x18\x02 \x01(\v2\v.book.PriceR\x05price\x12,\n" +
@@ -348,10 +349,10 @@ const file_book_book_proto_rawDesc = "" +
 	"\x0fHotBooksRequest\x12\x18\n" +
 	"\arequest\x18\x01 \x01(\tR\arequest\".\n" +
 	"\x10HotBooksResponse\x12\x1a\n" +
-	"\bbookName\x18\x01 \x01(\tR\bbookName2\xbc\x01\n" +
-	"\vBookService\x120\n" +
+	"\bbookName\x18\x01 \x01(\tR\bbookName2\xd8\x01\n" +
+	"\vBookService\x12L\n" +
 	"\x06Create\x12\n" +
-	".book.Book\x1a\x18.book.BookCreateResponse\"\x00\x129\n" +
+	".book.Book\x1a\x18.book.BookCreateResponse\"\x1c\x82\xd3\xe4\x93\x02\x16:\x01*\"\x11/v1/example/books\x129\n" +
 	"\x06Update\x12\x13.book.BookUpdateMsg\x1a\x18.book.BookUpdateResponse\"\x00\x12@\n" +
 	"\vGetHotBooks\x12\x15.book.HotBooksRequest\x1a\x16.book.HotBooksResponse(\x010\x01B Z\x1egithub.com/testProject/pb/bookb\x06proto3"
 

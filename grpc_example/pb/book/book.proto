@@ -14,6 +14,7 @@ import "book/price.proto";
 import "author/author.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/field_mask.proto";
+import "google/api/annotations.proto";
 
 message Book {
     string title = 1;
@@ -47,7 +48,12 @@ message HotBooksResponse {
 // 实现一个 Book 相关的方法
 service BookService {
     // 创建一个 Book
-    rpc Create(Book)returns(BookCreateResponse){};
+    rpc Create(Book)returns(BookCreateResponse){
+        option (google.api.http) = {
+            post: "/v1/example/books"
+            body: "*"
+        };
+    };
     // 更新 Book 的信息
     rpc Update(BookUpdateMsg)returns(BookUpdateResponse){};
     // 获取常见热门书籍

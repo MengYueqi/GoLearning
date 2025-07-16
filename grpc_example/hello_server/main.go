@@ -101,7 +101,7 @@ func main() {
 	////s := grpc.NewServer(grpc.Creds(creds))                  // 创建gRPC服务器
 	// 创建一个gRPC server对象
 	s := grpc.NewServer()
-	//bookpb.RegisterBookServiceServer(s, &BookServiceImpl{}) // 在gRPC服务端注册服务
+	bookpb.RegisterBookServiceServer(s, &BookServiceImpl{}) // 在gRPC服务端注册服务
 	pb.RegisterGreeterServer(s, &server{})
 	// 启动服务
 	go func() {
@@ -127,6 +127,11 @@ func main() {
 	err = pb.RegisterGreeterHandler(context.Background(), gwmux, conn)
 	if err != nil {
 		log.Fatalln("Failed to register gateway:", err)
+	}
+
+	err = bookpb.RegisterBookServiceHandler(context.Background(), gwmux, conn)
+	if err != nil {
+		log.Fatalln("Failed to register BookService gateway:", err)
 	}
 
 	gwServer := &http.Server{
