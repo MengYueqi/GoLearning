@@ -4,10 +4,11 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	_ "github.com/mbobakov/grpc-consul-resolver"
 	pb "github.com/testProject/pb"
 	bookbp "github.com/testProject/pb/book"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 	"io"
 	"log"
 	"time"
@@ -101,12 +102,17 @@ func main() {
 	//	log.Fatalf("could not greet: %v", err)
 	//}
 	//log.Printf("Greeting: %s", rU.Result)
-	creds, err := credentials.NewClientTLSFromFile("../cert/server.crt", "")
-	if err != nil {
-		log.Fatalf("Failed to create TLS credentials %v", err)
-	}
-	conn, err := grpc.NewClient(*addr, grpc.WithTransportCredentials(creds))
+	//creds, err := credentials.NewClientTLSFromFile("../cert/server.crt", "")
+	//if err != nil {
+	//	log.Fatalf("Failed to create TLS credentials %v", err)
+	//}
+	//conn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	//conn, err := grpc.NewClient(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(
+		// consul服务
+		"consul://localhost:8500/BookAndHello?healthy=true",
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
