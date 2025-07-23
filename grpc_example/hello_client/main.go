@@ -111,6 +111,7 @@ func main() {
 	conn, err := grpc.Dial(
 		// consul服务
 		"consul://localhost:8500/BookAndHello?healthy=true",
+		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {

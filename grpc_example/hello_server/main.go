@@ -20,8 +20,11 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
+	"os/signal"
 	"strconv"
 	"strings"
+	"syscall"
 )
 
 // hello server
@@ -143,20 +146,33 @@ func main() {
 		log.Fatalln("Failed to register gwmux:", err)
 	}
 	err = pb.RegisterGreeterHandlerFromEndpoint(context.Background(), gwmux, "127.0.0.1:8091", dops)
+
 	if err != nil {
 		log.Fatalln("Failed to register gwmux:", err)
 	}
 
-	mux := http.NewServeMux()
-	mux.Handle("/", gwmux)
+	go func() {
+		mux := http.NewServeMux()
+		mux.Handle("/", gwmux)
 
-	// 定义HTTP server配置
-	gwServer := &http.Server{
-		Addr:    "127.0.0.1:8091",
-		Handler: grpcHandlerFunc(s, mux), // 请求的统一入口
-	}
-	log.Println("Serving on http://127.0.0.1:8091")
-	log.Fatalln(gwServer.Serve(lis)) // 启动HTTP服务
+		// 定义HTTP server配置
+		gwServer := &http.Server{
+			Addr:    "127.0.0.1:8091",
+			Handler: grpcHandlerFunc(s, mux), // 请求的统一入口
+		}
+		log.Println("Serving on http://127.0.0.1:8091")
+		log.Fatalln(gwServer.Serve(lis)) // 启动HTTP服务
+	}()
+
+	// 注销服务
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGTERM, syscall.SIGINT)
+	fmt.Println("wait quit signal....")
+	<-sigChan
+	fmt.Println("deregistration ing...")
+	conImpl.client.Agent().ServiceDeregister(fmt.Sprintf("%s-%s-%d", "BookAndHello", localIP.String(), 8091))
+	fmt.Println("deregistration finished!")
+
 }
 
 // grpcHandlerFunc 将gRPC请求和HTTP请求分别调用不同的handler处理
