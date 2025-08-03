@@ -6,18 +6,19 @@
 package main
 
 import (
-	"helloworld/internal/biz"
-	"helloworld/internal/conf"
-	"helloworld/internal/data"
-	"helloworld/internal/server"
-	"helloworld/internal/service"
-
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
+	"helloworld/internal/conf"
+
+	"helloworld/internal/biz"
+	"helloworld/internal/data"
+	"helloworld/internal/server"
+	"helloworld/internal/service"
 )
 
 // wireApp init kratos application.
 func wireApp(*conf.Server, *conf.Data, log.Logger) (*kratos.App, func(), error) {
+	//wire.Build(data.ProviderSet, biz.ProviderSet, service.ProviderSet)
 	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
 }
