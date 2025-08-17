@@ -80,6 +80,8 @@ func main() {
 	}
 	defer cleanup()
 
+	// 添加 CORS 中间件
+
 	// start and wait for stop signal
 	if err := app.Run(); err != nil {
 		panic(err)

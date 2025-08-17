@@ -3,39 +3,14 @@
 
 openapi: 3.0.3
 info:
-    title: ""
+    title: Todo API
     version: 0.0.1
 paths:
-    /helloworld/{name}:
-        get:
-            tags:
-                - Greeter
-            description: Sends a greeting
-            operationId: Greeter_SayHello
-            parameters:
-                - name: name
-                  in: path
-                  required: true
-                  schema:
-                    type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/helloworld.v1.HelloReply'
     /v1/todo:
         get:
             tags:
                 - Todo
             operationId: Todo_ListTodo
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.helloworld.v1.ListTodoRequest'
-                required: true
             responses:
                 "200":
                     description: OK
@@ -71,12 +46,6 @@ paths:
                   required: true
                   schema:
                     type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.helloworld.v1.GetTodoRequest'
-                required: true
             responses:
                 "200":
                     description: OK
@@ -117,12 +86,6 @@ paths:
                   required: true
                   schema:
                     type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/api.helloworld.v1.DeleteTodoRequest'
-                required: true
             responses:
                 "200":
                     description: OK
@@ -145,21 +108,11 @@ components:
         api.helloworld.v1.DeleteTodoReply:
             type: object
             properties: {}
-        api.helloworld.v1.DeleteTodoRequest:
-            type: object
-            properties:
-                id:
-                    type: string
         api.helloworld.v1.GetTodoReply:
             type: object
             properties:
                 todo:
                     $ref: '#/components/schemas/api.helloworld.v1.TodoMessage'
-        api.helloworld.v1.GetTodoRequest:
-            type: object
-            properties:
-                id:
-                    type: string
         api.helloworld.v1.ListTodoReply:
             type: object
             properties:
@@ -167,9 +120,6 @@ components:
                     type: array
                     items:
                         $ref: '#/components/schemas/api.helloworld.v1.TodoMessage'
-        api.helloworld.v1.ListTodoRequest:
-            type: object
-            properties: {}
         api.helloworld.v1.TodoMessage:
             type: object
             properties:
@@ -191,13 +141,5 @@ components:
                     type: string
                 states:
                     type: boolean
-        helloworld.v1.HelloReply:
-            type: object
-            properties:
-                message:
-                    type: string
-            description: The response message containing the greetings
 tags:
-    - name: Greeter
-      description: The greeting service definition.
     - name: Todo

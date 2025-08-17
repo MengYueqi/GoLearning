@@ -23,19 +23,16 @@ service Todo {
 	rpc DeleteTodo (DeleteTodoRequest) returns (DeleteTodoReply) {
 		option (google.api.http) = {
 			delete: "/v1/todo/{id}",
-			body: "*"
 		};
 	};
 	rpc GetTodo (GetTodoRequest) returns (GetTodoReply) {
 		option (google.api.http) = {
 			get: "/v1/todo/{id}",
-			body: "*"
 		};
 	};
 	rpc ListTodo (ListTodoRequest) returns (ListTodoReply) {
 		option (google.api.http) = {
-			get: "/v1/todo",
-			body: "*"
+			get: "/v1/todo"
 		};
 	};
 }

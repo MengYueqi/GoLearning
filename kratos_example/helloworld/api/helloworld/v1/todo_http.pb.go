@@ -92,9 +92,6 @@ func _Todo_UpdateTodo0_HTTP_Handler(srv TodoHTTPServer) func(ctx http.Context) e
 func _Todo_DeleteTodo0_HTTP_Handler(srv TodoHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in DeleteTodoRequest
-		if err := ctx.Bind(&in); err != nil {
-			return err
-		}
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
@@ -117,9 +114,6 @@ func _Todo_DeleteTodo0_HTTP_Handler(srv TodoHTTPServer) func(ctx http.Context) e
 func _Todo_GetTodo0_HTTP_Handler(srv TodoHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in GetTodoRequest
-		if err := ctx.Bind(&in); err != nil {
-			return err
-		}
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
@@ -142,9 +136,6 @@ func _Todo_GetTodo0_HTTP_Handler(srv TodoHTTPServer) func(ctx http.Context) erro
 func _Todo_ListTodo0_HTTP_Handler(srv TodoHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in ListTodoRequest
-		if err := ctx.Bind(&in); err != nil {
-			return err
-		}
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
@@ -193,10 +184,10 @@ func (c *TodoHTTPClientImpl) CreateTodo(ctx context.Context, in *CreateTodoReque
 func (c *TodoHTTPClientImpl) DeleteTodo(ctx context.Context, in *DeleteTodoRequest, opts ...http.CallOption) (*DeleteTodoReply, error) {
 	var out DeleteTodoReply
 	pattern := "/v1/todo/{id}"
-	path := binding.EncodeURL(pattern, in, false)
+	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationTodoDeleteTodo))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "DELETE", path, in, &out, opts...)
+	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -206,10 +197,10 @@ func (c *TodoHTTPClientImpl) DeleteTodo(ctx context.Context, in *DeleteTodoReque
 func (c *TodoHTTPClientImpl) GetTodo(ctx context.Context, in *GetTodoRequest, opts ...http.CallOption) (*GetTodoReply, error) {
 	var out GetTodoReply
 	pattern := "/v1/todo/{id}"
-	path := binding.EncodeURL(pattern, in, false)
+	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationTodoGetTodo))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "GET", path, in, &out, opts...)
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -219,10 +210,10 @@ func (c *TodoHTTPClientImpl) GetTodo(ctx context.Context, in *GetTodoRequest, op
 func (c *TodoHTTPClientImpl) ListTodo(ctx context.Context, in *ListTodoRequest, opts ...http.CallOption) (*ListTodoReply, error) {
 	var out ListTodoReply
 	pattern := "/v1/todo"
-	path := binding.EncodeURL(pattern, in, false)
+	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationTodoListTodo))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "GET", path, in, &out, opts...)
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

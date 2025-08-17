@@ -541,16 +541,17 @@ const file_helloworld_v1_todo_proto_rawDesc = "" +
 	"\x04todo\x18\x01 \x01(\v2\x1e.api.helloworld.v1.TodoMessageR\x04todo\"\x11\n" +
 	"\x0fListTodoRequest\"C\n" +
 	"\rListTodoReply\x122\n" +
-	"\x04data\x18\x01 \x03(\v2\x1e.api.helloworld.v1.TodoMessageR\x04data2\xa7\x04\n" +
+	"\x04data\x18\x01 \x03(\v2\x1e.api.helloworld.v1.TodoMessageR\x04data2\x9e\x04\n" +
 	"\x04Todo\x12k\n" +
 	"\n" +
 	"CreateTodo\x12$.api.helloworld.v1.CreateTodoRequest\x1a\".api.helloworld.v1.CreateTodoReply\"\x13\x82\xd3\xe4\x93\x02\r:\x01*\"\b/v1/todo\x12p\n" +
 	"\n" +
-	"UpdateTodo\x12$.api.helloworld.v1.UpdateTodoRequest\x1a\".api.helloworld.v1.UpdateTodoReply\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*\x1a\r/v1/todo/{id}\x12p\n" +
+	"UpdateTodo\x12$.api.helloworld.v1.UpdateTodoRequest\x1a\".api.helloworld.v1.UpdateTodoReply\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*\x1a\r/v1/todo/{id}\x12m\n" +
 	"\n" +
-	"DeleteTodo\x12$.api.helloworld.v1.DeleteTodoRequest\x1a\".api.helloworld.v1.DeleteTodoReply\"\x18\x82\xd3\xe4\x93\x02\x12:\x01**\r/v1/todo/{id}\x12g\n" +
-	"\aGetTodo\x12!.api.helloworld.v1.GetTodoRequest\x1a\x1f.api.helloworld.v1.GetTodoReply\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*\x12\r/v1/todo/{id}\x12e\n" +
-	"\bListTodo\x12\".api.helloworld.v1.ListTodoRequest\x1a .api.helloworld.v1.ListTodoReply\"\x13\x82\xd3\xe4\x93\x02\r:\x01*\x12\b/v1/todoB6\n" +
+	"DeleteTodo\x12$.api.helloworld.v1.DeleteTodoRequest\x1a\".api.helloworld.v1.DeleteTodoReply\"\x15\x82\xd3\xe4\x93\x02\x0f*\r/v1/todo/{id}\x12d\n" +
+	"\aGetTodo\x12!.api.helloworld.v1.GetTodoRequest\x1a\x1f.api.helloworld.v1.GetTodoReply\"\x15\x82\xd3\xe4\x93\x02\x0f\x12\r/v1/todo/{id}\x12b\n" +
+	"\bListTodo\x12\".api.helloworld.v1.ListTodoRequest\x1a .api.helloworld.v1.ListTodoReply\"\x10\x82\xd3\xe4\x93\x02\n" +
+	"\x12\b/v1/todoB6\n" +
 	"\x11api.helloworld.v1P\x01Z\x1fhelloworld/api/helloworld/v1;v1b\x06proto3"
 
 var (
